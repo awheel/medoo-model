@@ -24,7 +24,9 @@ use medoo;
  *
  * 模型基类 基于 Medoo 代理封装
  *
- * @package light
+ * @package MedooModel
+ * @link http://medoo.in
+ * @link http://gitlab.hupu.com/hupu/medoo-model
  */
 abstract class MedooModel
 {
