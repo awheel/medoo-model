@@ -213,6 +213,7 @@ abstract class MedooModel
             $config = $this->config['config'];
 
             $master = $config[$this->database]['master'];
+            $master = $master[array_rand($master)];
             $this->connect[$this->database]['master'] = self::connection($master, $driver);
 
             $slave = $config[$this->database]['slave'];
@@ -235,7 +236,8 @@ abstract class MedooModel
     {
         return new medoo([
             'database_type' => $driver,
-            'database_name' => $config['database'],
+            'database_name' => $config['database_name'],
+            'prefix' => $config['prefix'],
             'server' => $config['server'],
             'username' => $config['username'],
             'password' => $config['password'],
