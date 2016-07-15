@@ -26,7 +26,7 @@ use medoo;
  *
  * @package light
  */
-abstract class Model
+abstract class MedooModel
 {
     /**
      * 配置
