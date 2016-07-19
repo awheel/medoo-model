@@ -95,6 +95,7 @@ abstract class MedooModel
         if (isset($config['driver'])) {
             throw new \Exception('未指定驱动');
         }
+        $this->config = $config;
 
         return $this;
     }
@@ -211,16 +212,13 @@ abstract class MedooModel
     protected function getConnectInstance()
     {
         if (!array_key_exists($this->database, $this->connect)) {
-            $driver = $this->config['driver'];
-            $config = $this->config['config'];
-
-            $master = $config[$this->database]['master'];
+            $master = $this->config[$this->database]['master'];
             $master = $master[array_rand($master)];
-            $this->connect[$this->database]['master'] = self::connection($master, $driver);
+            $this->connect[$this->database]['master'] = self::connection($master);
 
-            $slave = $config[$this->database]['slave'];
+            $slave = $this->config[$this->database]['slave'];
             $slave = $slave[array_rand($slave)];
-            $this->connect[$this->database]['slave'] = self::connection($slave, $driver);
+            $this->connect[$this->database]['slave'] = self::connection($slave);
         }
 
         return $this->connect[$this->database][$this->read ? 'slave' : 'master'];
@@ -230,14 +228,13 @@ abstract class MedooModel
      * 创建连接
      *
      * @param array $config
-     * @param string $driver
      *
      * @return \medoo
      */
-    static public function connection($config = [], $driver = 'mysql')
+    static public function connection($config = [])
     {
         return new medoo([
-            'database_type' => $driver,
+            'database_type' => $config['database_type'],
             'database_name' => $config['database_name'],
             'prefix' => $config['prefix'],
             'server' => $config['server'],
