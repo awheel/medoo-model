@@ -6,18 +6,18 @@ use PDO;
 use medoo;
 
 /**
- * @method select($columns, $where) Select data from database
+ * @method select($columns, $where = []) Select data from database
  * @method insert($data = []) Insert new records in table
  * @method update($data = [], $where = []) Modify data in table
  * @method delete($where = []) Delete data from table
- * @method replace($column, $search, $replace, $where) Replace old data into new one
+ * @method replace($column, $search, $replace, $where = []) Replace old data into new one
  *
  * @method get($columns = [], $where = []) Get only one record from table
  * @method has(array $where = []) Determine whether the target data existed
  * @method count($column, $where = []) Counts the number of rows
- * @method max($column, $where) Get the maximum value for the column
- * @method min($column, $where) Get the minimum value for the column
- * @method avg($column, $where) Get the average value for the column
+ * @method max($column, $where = []) Get the maximum value for the column
+ * @method min($column, $where = []) Get the minimum value for the column
+ * @method avg($column, $where = []) Get the average value for the column
  * @method sum($column, $where = []) Get the total value for the column
  *
  * @method $query($query) Insert new records in a table
