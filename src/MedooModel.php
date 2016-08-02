@@ -186,7 +186,8 @@ abstract class MedooModel
 
         // 自动维护数据库 插入更新时间
         $timestamp = date('Y-m-d H:i:s');
-        if (is_bool($this->timestamps) && $this->timestamps) {
+        $write = in_array($method, ['update', 'insert', 'replace']);
+        if ($write && is_bool($this->timestamps) && $this->timestamps) {
             if ($method == 'insert' || $method == 'replace') {
                 $arguments[1] =  array_merge($arguments[1], ['created_at' => $timestamp, 'updated_at' => $timestamp]);
             }
@@ -195,7 +196,7 @@ abstract class MedooModel
                 $arguments[1] = array_merge($arguments[1], ['updated_at' => $timestamp]);
             }
         }
-        elseif ($this->timestamps && is_array($this->timestamps)) {
+        elseif ($write && $this->timestamps && is_array($this->timestamps)) {
             foreach ($this->timestamps as $item) {
                 $arguments[1] = array_merge($arguments[1], [$item => $timestamp]);
             }
