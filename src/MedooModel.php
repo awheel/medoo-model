@@ -59,6 +59,13 @@ abstract class MedooModel
     public $table;
 
     /**
+     * 表别名
+     *
+     * @var
+     */
+    public $tableAlias;
+
+    /**
      * 表主键
      *
      * @var
@@ -182,6 +189,7 @@ abstract class MedooModel
     {
         $this->read = in_array($method, ['count', 'select', 'has', 'sum', 'max', 'min', 'avg', 'get']);
 
+        $this->tableAlias && $this->table .= "($this->tableAlias)";
         $arguments = array_merge([$this->table], $arguments);
 
         // 自动维护数据库 插入更新时间
