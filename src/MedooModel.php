@@ -263,5 +263,14 @@ abstract class MedooModel
             'option' => [PDO::ATTR_CASE => PDO::CASE_NATURAL]
         ]);
     }
+
+    /**
+     * 释放链接
+     */
+    public function __destruct()
+    {
+        $this->connect[$this->database]['master'] = null;
+        $this->connect[$this->database]['slave'] = null;
+    }
 }
 
