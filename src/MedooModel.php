@@ -269,7 +269,9 @@ abstract class MedooModel
      */
     public function __destruct()
     {
+        $this->connect[$this->database]['master']->pdo = null;
         $this->connect[$this->database]['master'] = null;
+        $this->connect[$this->database]['slave']->pdo = null;
         $this->connect[$this->database]['slave'] = null;
     }
 }
