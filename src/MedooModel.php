@@ -1,6 +1,6 @@
 <?php
 
-namespace Hupu\MedooModel;
+namespace light\MedooModel;
 
 use PDO;
 use medoo;
@@ -229,17 +229,17 @@ abstract class MedooModel
      */
     protected function getConnectInstance()
     {
-        if (!array_key_exists($this->database, $this->connect)) {
+        if (!isset($_ENV['lightMM']) || !isset($_ENV['lightMM'][$this->database])) {
             $master = $this->config[$this->database]['master'];
             $master = $master[array_rand($master)];
-            $this->connect[$this->database]['master'] = self::connection($master);
+            $_ENV['lightMM'][$this->database]['master'] = self::connection($master);
 
             $slave = $this->config[$this->database]['slave'];
             $slave = $slave[array_rand($slave)];
-            $this->connect[$this->database]['slave'] = self::connection($slave);
+            $_ENV['lightMM'][$this->database]['slave'] = self::connection($slave);
         }
 
-        return $this->connect[$this->database][$this->read ? 'slave' : 'master'];
+        return $_ENV['lightMM'][$this->database][$this->read ? 'slave' : 'master'];
     }
 
     /**
@@ -269,10 +269,10 @@ abstract class MedooModel
      */
     public function __destruct()
     {
-        $this->connect[$this->database]['master']->pdo = null;
-        $this->connect[$this->database]['master'] = null;
-        $this->connect[$this->database]['slave']->pdo = null;
-        $this->connect[$this->database]['slave'] = null;
+        $_ENV['lightMM'][$this->database]['master']->pdo = null;
+        $_ENV['lightMM'][$this->database]['master'] = null;
+        $_ENV['lightMM'][$this->database]['slave']->pdo = null;
+        $_ENV['lightMM'][$this->database]['slave'] = null;
     }
 }
 

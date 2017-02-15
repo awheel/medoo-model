@@ -1,9 +1,9 @@
 {
-    "name": "hupu/medoo-model",
+    "name": "light/medoo-model",
     "description": "Model based medoo.",
     "type": "library",
     "require": {
-        "catfan/medoo": "^1.1"
+        "catfan/medoo": "^1.2"
     },
     "license": "MIT",
     "minimum-stability": "stable",
@@ -15,7 +15,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Hupu\\MedooModel\\": "src/"
+            "light\\MedooModel\\": "src/"
         }
     }
 }
