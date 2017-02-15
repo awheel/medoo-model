@@ -3,7 +3,7 @@
 namespace light\MedooModel;
 
 use PDO;
-use medoo;
+use Medoo\Medoo;
 
 /**
  * @method select($columns, $where = []) Select data from database
@@ -174,7 +174,17 @@ abstract class MedooModel
      */
     public function last_query()
     {
-        return $this->getConnectInstance()->last_query();
+        return $this->getConnectInstance()->last();
+    }
+
+    /**
+     * 获取最新插入的 id
+     *
+     * @return int|string
+     */
+    public function id()
+    {
+        return $this->getConnectInstance()->id();
     }
 
     /**
@@ -225,7 +235,7 @@ abstract class MedooModel
     /**
      * 获取 connect 实例
      *
-     * @return \medoo
+     * @return Medoo
      */
     protected function getConnectInstance()
     {
@@ -247,11 +257,11 @@ abstract class MedooModel
      *
      * @param array $config
      *
-     * @return \medoo
+     * @return Medoo
      */
     static public function connection($config = [])
     {
-        return new medoo([
+        return new Medoo([
             'database_type' => $config['database_type'],
             'database_name' => $config['database_name'],
             'prefix' => $config['prefix'],
@@ -269,10 +279,9 @@ abstract class MedooModel
      */
     public function __destruct()
     {
-        $_ENV['lightMM'][$this->database]['master']->pdo = null;
-        $_ENV['lightMM'][$this->database]['master'] = null;
-        $_ENV['lightMM'][$this->database]['slave']->pdo = null;
-        $_ENV['lightMM'][$this->database]['slave'] = null;
+        @$_ENV['lightMM'][$this->database]['master']->pdo = null;
+        @$_ENV['lightMM'][$this->database]['master'] = null;
+        @$_ENV['lightMM'][$this->database]['slave']->pdo = null;
+        @$_ENV['lightMM'][$this->database]['slave'] = null;
     }
 }
-
