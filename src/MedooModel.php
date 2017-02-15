@@ -273,15 +273,4 @@ abstract class MedooModel
             'option' => [PDO::ATTR_CASE => PDO::CASE_NATURAL]
         ]);
     }
-
-    /**
-     * 释放链接
-     */
-    public function __destruct()
-    {
-        @$_ENV['lightMM'][$this->database]['master']->pdo = null;
-        @$_ENV['lightMM'][$this->database]['master'] = null;
-        @$_ENV['lightMM'][$this->database]['slave']->pdo = null;
-        @$_ENV['lightMM'][$this->database]['slave'] = null;
-    }
 }
