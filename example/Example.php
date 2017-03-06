@@ -14,4 +14,10 @@ $count = $user->update(['name' => 'test2'], ['id' => $id]);
 // 删除
 $status = $user->delete(['id' => $id]);
 
+// 自增
+$count = $user->update(['level[+]' => 5], ['id' => $id]);
+
+// 自减
+$count = $user->update(['level[-]' => 5], ['id' => $id]);
+
 // 更多使用参考: http://medoo.in/api/
