@@ -26,7 +26,7 @@ use Medoo\Medoo;
  *
  * @package MedooModel
  * @link http://medoo.in
- * @link http://gitlab.hupu.com/hupu/medoo-model
+ * @link http://gitlab.hupu.com/light/medoo-model
  */
 abstract class MedooModel
 {
