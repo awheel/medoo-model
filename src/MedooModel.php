@@ -20,13 +20,18 @@ use Medoo\Medoo;
  * @method avg($column, $where = []) Get the average value for the column
  * @method sum($column, $where = []) Get the total value for the column
  *
- * @method $query($query) Insert new records in a table
+ * @method query($query) Insert new records in a table
+ * @method quote($string) Quotes the string for query
+ *
+ * @method debug() Output the generated SQL without execute it.
+ *                 Return: Medoo object with debug mode enabled
+ * @method info() Get the information of database.
  *
  * 模型基类 基于 Medoo 代理封装
  *
  * @package MedooModel
  * @link http://medoo.in
- * @link http://gitlab.hupu.com/hupu/medoo-model
+ * @link http://gitlab.hupu.com/light/medoo-model
  */
 abstract class MedooModel
 {
