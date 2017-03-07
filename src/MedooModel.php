@@ -20,18 +20,11 @@ use Medoo\Medoo;
  * @method avg($column, $where = []) Get the average value for the column
  * @method sum($column, $where = []) Get the total value for the column
  *
- * @method query($query) Insert new records in a table
- * @method quote($string) Quotes the string for query
- *
- * @method debug() Output the generated SQL without execute it.
- *                 Return: Medoo object with debug mode enabled
- * @method info() Get the information of database.
- *
  * 模型基类 基于 Medoo 代理封装
  *
  * @package MedooModel
  * @link http://medoo.in
- * @link http://gitlab.hupu.com/light/medoo-model
+ * @link http://gitlab.hupu.com/hupu/medoo-model
  */
 abstract class MedooModel
 {
@@ -183,6 +176,16 @@ abstract class MedooModel
     }
 
     /**
+     * 获取最后一条 sql
+     *
+     * @return mixed
+     */
+    public function last()
+    {
+        return $this->last_query();
+    }
+
+    /**
      * 获取最新插入的 id
      *
      * @return int|string
@@ -190,6 +193,40 @@ abstract class MedooModel
     public function id()
     {
         return $this->getConnectInstance()->id();
+    }
+
+    /**
+     * 自定义查询
+     *
+     * @param $query
+     *
+     * @return bool|\PDOStatement
+     */
+    public function query($query)
+    {
+        return $this->getConnectInstance()->query($query);
+    }
+
+    /**
+     * 转义字符串, 供 query 使用
+     *
+     * @param $string
+     *
+     * @return string
+     */
+    public function quote($string)
+    {
+        return $this->getConnectInstance()->quote($string);
+    }
+
+    /**
+     * 获取数据库信息
+     *
+     * @return array
+     */
+    public function dbInfo()
+    {
+        return $this->getConnectInstance()->info();
     }
 
     /**
@@ -275,7 +312,7 @@ abstract class MedooModel
             'password' => $config['password'],
             'charset' => $config['charset'],
             'port' => $config['port'],
-            'option' => [PDO::ATTR_CASE => PDO::CASE_NATURAL]
+            'option' => [PDO::ATTR_CASE => PDO::CASE_NATURAL, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
         ]);
     }
 }
