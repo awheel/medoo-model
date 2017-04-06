@@ -57,13 +57,6 @@ abstract class MedooModel
     public $table;
 
     /**
-     * 表别名
-     *
-     * @var
-     */
-    public $tableAlias;
-
-    /**
      * 表主键
      *
      * @var
@@ -241,14 +234,6 @@ abstract class MedooModel
     {
         // 是否是读操作
         $this->read = in_array($method, ['count', 'select', 'has', 'sum', 'max', 'min', 'avg', 'get']);
-
-        // 表缩写, 方便联表
-        if ($this->read && $this->tableAlias) {
-            $this->table .= "($this->tableAlias)";
-        }
-        else {
-            $this->table = str_replace("($this->tableAlias)", '', $this->table);
-        }
 
         // 第一个是表名
         $arguments = array_merge([$this->table], $arguments);
