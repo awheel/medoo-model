@@ -1,6 +1,6 @@
 <?php
 
-namespace light\MedooModel;
+namespace awheel\MedooModel;
 
 use PDO;
 use Medoo\Medoo;
@@ -281,17 +281,17 @@ abstract class MedooModel
      */
     protected function getConnectInstance()
     {
-        if (!isset($_ENV['lightMM']) || !isset($_ENV['lightMM'][$this->database])) {
+        if (!isset($_ENV['awheelMM']) || !isset($_ENV['awheelMM'][$this->database])) {
             $master = $this->config[$this->database]['master'];
             $master = $master[array_rand($master)];
-            $_ENV['lightMM'][$this->database]['master'] = self::connection($master);
+            $_ENV['awheelMM'][$this->database]['master'] = self::connection($master);
 
             $slave = $this->config[$this->database]['slave'];
             $slave = $slave[array_rand($slave)];
-            $_ENV['lightMM'][$this->database]['slave'] = self::connection($slave);
+            $_ENV['awheelMM'][$this->database]['slave'] = self::connection($slave);
         }
 
-        return $_ENV['lightMM'][$this->database][$this->read ? 'slave' : 'master'];
+        return $_ENV['awheelMM'][$this->database][$this->read ? 'slave' : 'master'];
     }
 
     /**

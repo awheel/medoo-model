@@ -1,5 +1,5 @@
 {
-    "name": "light/medoo-model",
+    "name": "awheel/medoo-model",
     "description": "Model based medoo.",
     "type": "library",
     "require": {
@@ -15,7 +15,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "light\\MedooModel\\": "src/"
+            "awheel\\MedooModel\\": "src/"
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Hupu\MedooModel\MedooModel;
+use awheel\MedooModel\MedooModel;
 
 class Base extends MedooModel
 {
