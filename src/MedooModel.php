@@ -24,7 +24,7 @@ use Medoo\Medoo;
  *
  * @package MedooModel
  * @link http://medoo.in
- * @link http://gitlab.hupu.com/hupu/medoo-model
+ * @link https://github.com/awheel/medoo-model
  */
 abstract class MedooModel
 {
@@ -220,6 +220,30 @@ abstract class MedooModel
     public function dbInfo()
     {
         return $this->getConnectInstance()->info();
+    }
+
+    /**
+     * 事务
+     *
+     * @param $callback
+     *
+     * @return bool
+     */
+    public function action($callback)
+    {
+        return $this->getConnectInstance()->action($callback);
+    }
+
+    /**
+     * 开启 debug 模式
+     *
+     * @return $this
+     */
+    public function debug()
+    {
+        $this->getConnectInstance()->debug();
+
+        return $this;
     }
 
     /**
