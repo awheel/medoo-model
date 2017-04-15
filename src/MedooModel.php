@@ -20,7 +20,7 @@ use Medoo\Medoo;
  * @method avg($column, $where = []) Get the average value for the column
  * @method sum($column, $where = []) Get the total value for the column
  *
- * 模型基类 基于 Medoo 代理封装
+ * 基类 基于 Medoo 代理封装
  *
  * @package MedooModel
  * @link http://medoo.in
@@ -28,20 +28,6 @@ use Medoo\Medoo;
  */
 abstract class MedooModel
 {
-    /**
-     * 配置
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
-     * 数据连接实例
-     *
-     * @var array
-     */
-    protected $connect = [];
-
     /**
      * 库名
      *
@@ -64,18 +50,39 @@ abstract class MedooModel
     public $primary = 'id';
 
     /**
+     * 自动维护 created_at 和 updated_at, 或其他指定字段
+     *
+     * @var string|array|bool
+     */
+    public $timestamps = false;
+
+    /**
+     * 配置
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
+     * a place of connect
+     *
+     * @var string
+     */
+    protected $place = 'MedooModel';
+
+    /**
      * 是否是读操作
      *
      * @var bool
      */
-    public $read = false;
+    protected $read = false;
 
     /**
-     * 自动维护 created_at 和 updated_at, 或其他指定字段
+     * 是否是写操作
      *
-     * @var array|bool
+     * @var bool
      */
-    public $timestamps = false;
+    protected $write = false;
 
     /**
      * Model constructor.
@@ -247,6 +254,26 @@ abstract class MedooModel
     }
 
     /**
+     * 获取表名
+     *
+     * @return mixed
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * 设置表名
+     *
+     * @param $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
+    }
+
+    /**
      * Medoo 调用代理
      *
      * @param $method
@@ -259,28 +286,59 @@ abstract class MedooModel
         // 是否是读操作
         $this->read = in_array($method, ['count', 'select', 'has', 'sum', 'max', 'min', 'avg', 'get']);
 
+        // 是否是写操作
+        $this->write = in_array($method, ['update', 'insert', 'replace']);
+
         // 第一个是表名
         $arguments = array_merge([$this->table], $arguments);
 
         // 自动维护数据库 插入更新时间
-        $timestamp = date('Y-m-d H:i:s');
-        $write = in_array($method, ['update', 'insert', 'replace']);
-        if ($write && is_bool($this->timestamps) && $this->timestamps) {
-            if ($method == 'insert' || $method == 'replace') {
-                $arguments[1] =  array_merge($arguments[1], ['created_at' => $timestamp, 'updated_at' => $timestamp]);
-            }
-
-            if ($method == 'update') {
-                $arguments[1] = array_merge($arguments[1], ['updated_at' => $timestamp]);
-            }
-        }
-        elseif ($write && $this->timestamps && is_array($this->timestamps)) {
-            foreach ($this->timestamps as $item) {
-                $arguments[1] = array_merge($arguments[1], [$item => $timestamp]);
-            }
-        }
+        $this->appendTimestamps($method, $arguments[1]);
 
         return call_user_func_array([$this->getConnectInstance(), $method], $arguments);
+    }
+
+    /**
+     * 自动维护数据库 插入更新时间
+     *
+     * @param $method
+     * @param $data
+     *
+     * @return array
+     */
+    protected function appendTimestamps($method, &$data)
+    {
+        $timestamp = date('Y-m-d H:i:s');
+        $times = [];
+
+        if ($this->write && $this->timestamps) {
+            if (is_bool($this->timestamps)) {
+                $times = ['updated_at' => $timestamp];
+                $method == 'insert' && $times['created_at'] = $timestamp;
+            }
+            elseif (is_array($this->timestamps)) {
+                foreach ($this->timestamps as $item) {
+                    $times[$item] = $timestamp;
+                }
+            }
+            elseif (is_string($this->timestamps)) {
+                $times[$this->timestamps] = $timestamp;
+            }
+        }
+
+        $multi = $method == 'insert' && is_array($data) && is_numeric(array_keys($data)[0]);
+        if ($times) {
+            if ($multi) {
+                foreach ($data as &$item) {
+                    $item = array_merge($item, $times);
+                }
+            }
+            else {
+                $data = array_merge($data, $times);
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -290,17 +348,17 @@ abstract class MedooModel
      */
     protected function getConnectInstance()
     {
-        if (!isset($_ENV['awheelMM']) || !isset($_ENV['awheelMM'][$this->database])) {
+        if (!isset($_ENV[$this->place]) || !isset($_ENV[$this->place][$this->database])) {
             $master = $this->config[$this->database]['master'];
             $master = $master[array_rand($master)];
-            $_ENV['awheelMM'][$this->database]['master'] = self::connection($master);
+            $_ENV[$this->place][$this->database]['master'] = $this->connection($master);
 
             $slave = $this->config[$this->database]['slave'];
             $slave = $slave[array_rand($slave)];
-            $_ENV['awheelMM'][$this->database]['slave'] = self::connection($slave);
+            $_ENV[$this->place][$this->database]['slave'] = $this->connection($slave);
         }
 
-        return $_ENV['awheelMM'][$this->database][$this->read ? 'slave' : 'master'];
+        return $_ENV[$this->place][$this->database][$this->read ? 'slave' : 'master'];
     }
 
     /**
@@ -310,7 +368,7 @@ abstract class MedooModel
      *
      * @return Medoo
      */
-    static public function connection($config = [])
+    protected function connection($config = [])
     {
         return new Medoo([
             'database_type' => $config['database_type'],
