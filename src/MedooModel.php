@@ -116,6 +116,16 @@ abstract class MedooModel
     }
 
     /**
+     * 判断是否有错误发生
+     *
+     * @return bool
+     */
+    public function hasError()
+    {
+        return $this->pdo()->errorCode() > 0;
+    }
+
+    /**
      * 获取数据库连接实例
      *
      * @return PDO
