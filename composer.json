@@ -3,7 +3,8 @@
     "description": "Model based medoo.",
     "type": "library",
     "require": {
-        "catfan/medoo": "^1.2"
+        "php": ">=5.4.0",
+        "catfan/Medoo": "^1.2"
     },
     "license": "MIT",
     "minimum-stability": "stable",
