@@ -361,11 +361,18 @@ abstract class MedooModel
         if (!isset($_ENV[$this->place]) || !isset($_ENV[$this->place][$this->database])) {
             $master = $this->config[$this->database]['master'];
             $master = $master[array_rand($master)];
-            $_ENV[$this->place][$this->database]['master'] = $this->connection($master);
 
             $slave = $this->config[$this->database]['slave'];
             $slave = $slave[array_rand($slave)];
-            $_ENV[$this->place][$this->database]['slave'] = $this->connection($slave);
+
+            $_ENV[$this->place][$this->database]['master'] = $this->connection($master);
+
+            if (empty(array_diff($master, $slave))) {
+                $_ENV[$this->place][$this->database]['slave'] = &$_ENV[$this->place][$this->database]['master'];
+            }
+            else {
+                $_ENV[$this->place][$this->database]['slave'] = $this->connection($slave);
+            }
         }
 
         return $_ENV[$this->place][$this->database][$this->read ? 'slave' : 'master'];
@@ -391,5 +398,15 @@ abstract class MedooModel
             'port' => $config['port'],
             'option' => [PDO::ATTR_CASE => PDO::CASE_NATURAL, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
         ]);
+    }
+
+    /**
+     * 清理资源
+     *
+     * @return void
+     */
+    public function __destruct()
+    {
+        $_ENV[$this->place] = null;
     }
 }
