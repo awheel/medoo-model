@@ -270,7 +270,7 @@ abstract class MedooModel
      */
     public function getTable()
     {
-        return $this->table;
+        return $this->config[$this->database][$this->read ? 'master' : 'slave'][0]['prefix'].$this->table;
     }
 
     /**
@@ -280,7 +280,7 @@ abstract class MedooModel
      */
     public function setTable($table)
     {
-        $this->table = $table;
+        $this->table = ltrim($table, $this->config[$this->database][$this->read ? 'master' : 'slave'][0]['prefix']);
     }
 
     /**
