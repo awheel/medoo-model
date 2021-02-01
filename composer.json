@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": ">=5.4.0",
-        "catfan/Medoo": "^1.2"
+        "catfan/medoo": "^1.2"
     },
     "license": "MIT",
     "minimum-stability": "stable",
